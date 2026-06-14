@@ -7,6 +7,7 @@ import type { Category } from "@/components/CategoryFilter";
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
+  const [color, setColor] = useState("#3b82f6");
 
   async function load() {
     const res = await fetch("/api/categories");
@@ -22,9 +23,10 @@ export default function CategoriesPage() {
     await fetch("/api/categories", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, color }),
     });
     setName("");
+    setColor("#3b82f6");
     load();
   }
 
@@ -35,6 +37,15 @@ export default function CategoriesPage() {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ name: next }),
+    });
+    load();
+  }
+
+  async function changeColor(id: string, newColor: string) {
+    await fetch(`/api/categories/${id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ color: newColor }),
     });
     load();
   }
@@ -61,13 +72,29 @@ export default function CategoriesPage() {
           placeholder="New category name"
           className="flex-1 rounded-lg border px-4 py-2"
         />
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          className="rounded-lg border w-10 h-10 cursor-pointer p-1"
+          title="Pick category color"
+        />
         <button className="rounded-lg bg-black text-white px-4">Add</button>
       </form>
 
       <ul className="space-y-2">
         {categories.map((c) => (
           <li key={c.id} className="flex items-center justify-between border rounded-lg px-4 py-2">
-            <span>{c.name}</span>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={c.color ?? "#cccccc"}
+                onChange={(e) => changeColor(c.id, e.target.value)}
+                className="rounded border w-7 h-7 cursor-pointer p-0.5"
+                title="Change color"
+              />
+              <span>{c.name}</span>
+            </div>
             <span className="flex gap-3 text-sm">
               <button onClick={() => rename(c.id, c.name)} className="text-blue-600">
                 Rename

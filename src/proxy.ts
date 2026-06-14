@@ -14,6 +14,6 @@ export function proxy(req: NextRequest) {
 // Protect everything except login page, login API, and static assets.
 export const config = {
   matcher: [
-    "/((?!login|api/login|_next/static|_next/image|favicon.ico|manifest.json|sw.js|icons).*)",
+    "/((?!login$|api/login|_next/|favicon.ico|manifest.json|sw.js|icons/).*)",
   ],
 };

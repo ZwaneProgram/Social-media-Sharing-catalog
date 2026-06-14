@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import type { CatalogItem } from "@/components/ItemCard";
 import type { Category } from "@/components/CategoryFilter";
 
@@ -13,14 +14,23 @@ export default function ItemDetailPage() {
   const [note, setNote] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [saved, setSaved] = useState(false);
+  const [status, setStatus] = useState<"loading" | "ok" | "notfound">("loading");
 
   useEffect(() => {
     fetch(`/api/items/${id}`)
-      .then((r) => r.json())
-      .then((data: CatalogItem) => {
+      .then((r) => {
+        if (!r.ok) {
+          setStatus("notfound");
+          return null;
+        }
+        return r.json();
+      })
+      .then((data: CatalogItem | null) => {
+        if (!data) return;
         setItem(data);
         setNote(data.note ?? "");
         setCategoryId(data.categoryId ?? "");
+        setStatus("ok");
       });
     fetch("/api/categories").then((r) => r.json()).then(setCategories);
   }, [id]);
@@ -42,7 +52,17 @@ export default function ItemDetailPage() {
     router.refresh();
   }
 
-  if (!item) return <main className="p-4">Loading…</main>;
+  if (status === "notfound")
+    return (
+      <main className="p-4 space-y-2">
+        <p className="text-gray-600">Item not found.</p>
+        <Link href="/" className="text-blue-600 text-sm">
+          ← Back to catalog
+        </Link>
+      </main>
+    );
+
+  if (status === "loading" || !item) return <main className="p-4">Loading…</main>;
 
   return (
     <main className="max-w-lg mx-auto p-4 space-y-4">

@@ -27,7 +27,7 @@ function extractOgTag(html: string, property: string): string | null {
 
 async function fetchYouTube(url: string): Promise<LinkMetadata> {
   const oembed = `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(url)}`;
-  const res = await fetch(oembed);
+  const res = await fetch(oembed, { signal: AbortSignal.timeout(5000) });
   if (!res.ok) throw new Error(`oembed ${res.status}`);
   const data = (await res.json()) as { title?: string; thumbnail_url?: string };
   return {
@@ -40,6 +40,7 @@ async function fetchYouTube(url: string): Promise<LinkMetadata> {
 async function fetchOpenGraph(url: string, platform: Platform): Promise<LinkMetadata> {
   const res = await fetch(url, {
     headers: { "user-agent": "Mozilla/5.0 (compatible; ContentCatalog/1.0)" },
+    signal: AbortSignal.timeout(5000),
   });
   if (!res.ok) throw new Error(`fetch ${res.status}`);
   const html = await res.text();
