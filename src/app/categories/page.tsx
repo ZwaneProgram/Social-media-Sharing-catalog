@@ -57,10 +57,10 @@ export default function CategoriesPage() {
   }
 
   return (
-    <main className="max-w-lg mx-auto p-4 space-y-4">
+    <main className="max-w-lg mx-auto px-4 py-6 space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Categories</h1>
-        <Link href="/" className="text-sm text-gray-500">
+        <h1 className="text-2xl font-semibold tracking-tight">Categories</h1>
+        <Link href="/" className="text-sm text-muted transition hover:text-ink">
           Done
         </Link>
       </div>
@@ -70,42 +70,57 @@ export default function CategoriesPage() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="New category name"
-          className="flex-1 rounded-lg border px-4 py-2"
+          className="input flex-1"
         />
         <input
           type="color"
           value={color}
           onChange={(e) => setColor(e.target.value)}
-          className="rounded-lg border w-10 h-10 cursor-pointer p-1"
+          className="h-12 w-12 shrink-0 cursor-pointer rounded-xl border border-[var(--color-line)] bg-[var(--color-elevated)] p-1"
           title="Pick category color"
         />
-        <button className="rounded-lg bg-black text-white px-4">Add</button>
+        <button className="btn-primary shrink-0">Add</button>
       </form>
 
-      <ul className="space-y-2">
-        {categories.map((c) => (
-          <li key={c.id} className="flex items-center justify-between border rounded-lg px-4 py-2">
-            <div className="flex items-center gap-2">
-              <input
-                type="color"
-                value={c.color ?? "#cccccc"}
-                onChange={(e) => changeColor(c.id, e.target.value)}
-                className="rounded border w-7 h-7 cursor-pointer p-0.5"
-                title="Change color"
-              />
-              <span>{c.name}</span>
-            </div>
-            <span className="flex gap-3 text-sm">
-              <button onClick={() => rename(c.id, c.name)} className="text-blue-600">
-                Rename
-              </button>
-              <button onClick={() => remove(c.id)} className="text-red-500">
-                Delete
-              </button>
-            </span>
-          </li>
-        ))}
-      </ul>
+      {categories.length === 0 ? (
+        <p className="card px-6 py-10 text-center text-sm text-muted">
+          No categories yet. Create one above to organize your links.
+        </p>
+      ) : (
+        <ul className="space-y-2">
+          {categories.map((c) => (
+            <li
+              key={c.id}
+              className="card flex items-center justify-between px-4 py-3"
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="color"
+                  value={c.color ?? "#cccccc"}
+                  onChange={(e) => changeColor(c.id, e.target.value)}
+                  className="h-8 w-8 shrink-0 cursor-pointer rounded-lg border border-[var(--color-line)] bg-transparent p-0.5"
+                  title="Change color"
+                />
+                <span className="font-medium">{c.name}</span>
+              </div>
+              <span className="flex gap-4 text-sm">
+                <button
+                  onClick={() => rename(c.id, c.name)}
+                  className="text-muted transition hover:text-ink"
+                >
+                  Rename
+                </button>
+                <button
+                  onClick={() => remove(c.id)}
+                  className="text-red-400 transition hover:text-red-300"
+                >
+                  Delete
+                </button>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }

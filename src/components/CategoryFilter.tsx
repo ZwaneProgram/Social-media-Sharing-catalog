@@ -19,9 +19,7 @@ export function CategoryFilter({
     <div className="flex gap-2 flex-wrap">
       <button
         onClick={() => onSelect(null)}
-        className={`px-3 py-1 rounded-full text-sm border ${
-          selected === null ? "bg-black text-white" : ""
-        }`}
+        className={selected === null ? "chip chip-active" : "chip"}
       >
         All
       </button>
@@ -29,10 +27,14 @@ export function CategoryFilter({
         <button
           key={c.id}
           onClick={() => onSelect(c.id)}
-          className={`px-3 py-1 rounded-full text-sm border ${
-            selected === c.id ? "bg-black text-white" : ""
-          }`}
+          className={selected === c.id ? "chip chip-active" : "chip"}
         >
+          {c.color && (
+            <span
+              className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle"
+              style={{ backgroundColor: c.color }}
+            />
+          )}
           {c.name}
         </button>
       ))}

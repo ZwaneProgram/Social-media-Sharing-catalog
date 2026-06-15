@@ -14,10 +14,10 @@ export default async function AddPage({
   const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
 
   return (
-    <main className="max-w-lg mx-auto p-4 space-y-4">
+    <main className="max-w-lg mx-auto px-4 py-6 space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Add link</h1>
-        <Link href="/" className="text-sm text-gray-500">
+        <h1 className="text-2xl font-semibold tracking-tight">Add link</h1>
+        <Link href="/" className="text-sm text-muted transition hover:text-ink">
           Cancel
         </Link>
       </div>

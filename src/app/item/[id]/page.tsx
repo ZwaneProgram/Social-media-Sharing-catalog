@@ -54,67 +54,81 @@ export default function ItemDetailPage() {
 
   if (status === "notfound")
     return (
-      <main className="p-4 space-y-2">
-        <p className="text-gray-600">Item not found.</p>
-        <Link href="/" className="text-blue-600 text-sm">
+      <main className="mx-auto max-w-lg space-y-3 px-4 py-10 text-center">
+        <p className="text-4xl">🔍</p>
+        <p className="text-muted">Item not found.</p>
+        <Link href="/" className="text-sm text-brand transition hover:text-ink">
           ← Back to catalog
         </Link>
       </main>
     );
 
-  if (status === "loading" || !item) return <main className="p-4">Loading…</main>;
+  if (status === "loading" || !item)
+    return <main className="px-4 py-10 text-center text-muted">Loading…</main>;
 
   return (
-    <main className="max-w-lg mx-auto p-4 space-y-4">
-      <button onClick={() => router.back()} className="text-sm text-gray-500">
+    <main className="max-w-lg mx-auto px-4 py-5 space-y-4">
+      <button
+        onClick={() => router.back()}
+        className="text-sm text-muted transition hover:text-ink"
+      >
         ← Back
       </button>
       {item.thumbnailUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={item.thumbnailUrl} alt={item.title} className="w-full rounded-xl" />
+        <img
+          src={item.thumbnailUrl}
+          alt={item.title}
+          className="w-full rounded-2xl border border-[var(--color-line)]"
+        />
       )}
-      <h1 className="text-xl font-bold">{item.title}</h1>
+      <h1 className="text-xl font-semibold leading-snug tracking-tight">{item.title}</h1>
       <a
         href={item.url}
         target="_blank"
         rel="noreferrer"
-        className="text-blue-600 text-sm break-all"
+        className="inline-flex items-center gap-1 text-sm text-brand transition hover:text-ink break-all"
       >
         Open original →
       </a>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Note</label>
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="w-full rounded-lg border px-4 py-3"
-          rows={3}
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Category</label>
-        <select
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-          className="w-full rounded-lg border px-4 py-3"
-        >
-          <option value="">Uncategorized</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <div className="card space-y-5 p-5">
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-muted">Note</label>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="input resize-none"
+            rows={3}
+          />
+        </div>
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-muted">Category</label>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            className="input"
+          >
+            <option value="">Uncategorized</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div className="flex gap-2">
-        <button onClick={save} className="flex-1 rounded-lg bg-black text-white py-3">
-          {saved ? "Saved ✓" : "Save changes"}
-        </button>
-        <button onClick={remove} className="rounded-lg border border-red-500 text-red-500 px-4">
-          Delete
-        </button>
+        <div className="flex gap-2">
+          <button onClick={save} className="btn-primary flex-1 py-3">
+            {saved ? "Saved ✓" : "Save changes"}
+          </button>
+          <button
+            onClick={remove}
+            className="btn border border-red-500/60 px-4 text-red-400 transition hover:bg-red-500/10"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </main>
   );

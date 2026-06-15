@@ -3,9 +3,11 @@ import { ItemCard, type CatalogItem } from "@/components/ItemCard";
 export function ItemGrid({ items }: { items: CatalogItem[] }) {
   if (items.length === 0) {
     return (
-      <p className="text-center text-gray-400 py-12">
-        Nothing here yet. Paste a link to get started.
-      </p>
+      <div className="card flex flex-col items-center gap-2 px-6 py-16 text-center">
+        <span className="text-4xl">📭</span>
+        <p className="font-medium">Nothing here yet</p>
+        <p className="text-sm text-muted">Paste or share a link to start your catalog.</p>
+      </div>
     );
   }
   return (

@@ -19,39 +19,55 @@ const platformIcon: Record<string, string> = {
   other: "🔗",
 };
 
+const platformLabel: Record<string, string> = {
+  youtube: "YouTube",
+  instagram: "Instagram",
+  facebook: "Facebook",
+  other: "Link",
+};
+
 export function ItemCard({ item }: { item: CatalogItem }) {
   return (
     <Link
       href={`/item/${item.id}`}
-      className="block rounded-xl overflow-hidden border hover:shadow-lg transition"
+      className="group card overflow-hidden transition duration-200 hover:-translate-y-1 hover:border-[var(--color-line-strong)] hover:shadow-xl hover:shadow-black/40"
     >
-      <div className="aspect-video bg-gray-100 flex items-center justify-center">
+      <div className="relative aspect-video overflow-hidden bg-[var(--color-elevated)]">
         {item.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={item.thumbnailUrl}
             alt={item.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
         ) : (
-          <span className="text-4xl">{platformIcon[item.platform] ?? "🔗"}</span>
+          <div className="grid h-full place-items-center bg-gradient-to-br from-[var(--color-elevated)] to-[var(--color-surface)] text-4xl">
+            {platformIcon[item.platform] ?? "🔗"}
+          </div>
         )}
+        <span className="absolute left-2 top-2 rounded-md bg-black/55 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
+          {platformIcon[item.platform] ?? "🔗"} {platformLabel[item.platform] ?? "Link"}
+        </span>
       </div>
-      <div className="p-3 space-y-1">
-        <div className="flex items-center gap-1 text-xs text-gray-500">
-          <span>{platformIcon[item.platform] ?? "🔗"}</span>
-          {item.category && (
+      <div className="space-y-1.5 p-3">
+        {item.category && (
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium"
+            style={{
+              backgroundColor: `${item.category.color ?? "#7c5cff"}22`,
+              color: item.category.color ?? "#c06bff",
+            }}
+          >
             <span
-              className="px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: item.category.color ?? "#eee" }}
-            >
-              {item.category.name}
-            </span>
-          )}
-        </div>
-        <h3 className="font-medium line-clamp-2">{item.title}</h3>
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ backgroundColor: item.category.color ?? "#7c5cff" }}
+            />
+            {item.category.name}
+          </span>
+        )}
+        <h3 className="line-clamp-2 text-sm font-medium leading-snug">{item.title}</h3>
         {item.note && (
-          <p className="text-sm text-gray-500 line-clamp-1">{item.note}</p>
+          <p className="line-clamp-1 text-xs text-muted">{item.note}</p>
         )}
       </div>
     </Link>

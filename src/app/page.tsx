@@ -31,21 +31,31 @@ export default function HomePage() {
   }, [loadItems]);
 
   return (
-    <main className="max-w-5xl mx-auto p-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Catalog</h1>
-        <div className="flex gap-2">
-          <Link href="/categories" className="px-3 py-2 rounded-lg border text-sm">
-            Categories
+    <>
+      <header className="sticky top-0 z-20 border-b border-[var(--color-line)] bg-[rgba(8,8,12,0.7)] backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3.5">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-[var(--color-brand)] to-[var(--color-brand-2)] text-lg shadow-lg shadow-[rgba(124,92,255,0.4)]">
+              🎬
+            </span>
+            <span className="text-lg font-semibold tracking-tight">Catalog</span>
           </Link>
-          <Link href="/add" className="px-3 py-2 rounded-lg bg-black text-white text-sm">
-            + Add
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/categories" className="btn-ghost">
+              Categories
+            </Link>
+            <Link href="/add" className="btn-primary">
+              + Add link
+            </Link>
+          </div>
         </div>
-      </div>
-      <SearchBar value={query} onChange={setQuery} />
-      <CategoryFilter categories={categories} selected={selected} onSelect={setSelected} />
-      <ItemGrid items={items} />
-    </main>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-4 py-5 space-y-5">
+        <SearchBar value={query} onChange={setQuery} />
+        <CategoryFilter categories={categories} selected={selected} onSelect={setSelected} />
+        <ItemGrid items={items} />
+      </main>
+    </>
   );
 }

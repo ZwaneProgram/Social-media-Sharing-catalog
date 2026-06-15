@@ -57,35 +57,35 @@ export function AddForm({
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4">
+    <form onSubmit={submit} className="card space-y-5 p-5">
       <div>
-        <label className="block text-sm font-medium mb-1">Link</label>
+        <label className="mb-1.5 block text-sm font-medium text-muted">Link</label>
         <input
           type="url"
           required
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Paste a link…"
-          className="w-full rounded-lg border px-4 py-3"
+          className="input"
           autoFocus={!initialUrl}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Note</label>
+        <label className="mb-1.5 block text-sm font-medium text-muted">Note</label>
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="What's the idea? Why save it?"
-          className="w-full rounded-lg border px-4 py-3"
+          className="input resize-none"
           rows={3}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Category</label>
+        <label className="mb-1.5 block text-sm font-medium text-muted">Category</label>
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="w-full rounded-lg border px-4 py-3"
+          className="input"
         >
           <option value="">Uncategorized</option>
           {categories.map((c) => (
@@ -95,12 +95,9 @@ export function AddForm({
           ))}
         </select>
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <button
-        disabled={saving}
-        className="w-full rounded-lg bg-black text-white py-3 font-medium disabled:opacity-50"
-      >
-        {saving ? "Saving…" : "Save"}
+      {error && <p className="text-sm text-red-400">{error}</p>}
+      <button disabled={saving} className="btn-primary w-full py-3 text-base">
+        {saving ? "Saving…" : "Save to catalog"}
       </button>
     </form>
   );
