@@ -1,34 +1,38 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 import Link from "next/link";
 import { ItemGrid } from "@/components/ItemGrid";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter, type Category } from "@/components/CategoryFilter";
 import type { CatalogItem } from "@/components/ItemCard";
 
+// Returns `value` immediately on first render, then delays later updates by `ms`.
+// This keeps search typing from firing a request per keystroke without adding any
+// delay to the initial page load.
+function useDebounced<T>(value: T, ms: number): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), ms);
+    return () => clearTimeout(t);
+  }, [value, ms]);
+  return debounced;
+}
+
 export default function HomePage() {
-  const [items, setItems] = useState<CatalogItem[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounced(query, 250);
 
-  const loadItems = useCallback(async () => {
-    const params = new URLSearchParams();
-    if (selected) params.set("category", selected);
-    if (query) params.set("q", query);
-    const res = await fetch(`/api/items?${params.toString()}`);
-    setItems(await res.json());
-  }, [selected, query]);
+  const { data: categories = [] } = useSWR<Category[]>("/api/categories");
 
-  useEffect(() => {
-    fetch("/api/categories").then((r) => r.json()).then(setCategories);
-  }, []);
-
-  useEffect(() => {
-    const t = setTimeout(loadItems, 200); // debounce search
-    return () => clearTimeout(t);
-  }, [loadItems]);
+  const params = new URLSearchParams();
+  if (selected) params.set("category", selected);
+  if (debouncedQuery) params.set("q", debouncedQuery);
+  const { data: items, isLoading } = useSWR<CatalogItem[]>(
+    `/api/items?${params.toString()}`
+  );
 
   return (
     <>
@@ -54,7 +58,7 @@ export default function HomePage() {
       <main className="max-w-5xl mx-auto px-4 py-5 space-y-5">
         <SearchBar value={query} onChange={setQuery} />
         <CategoryFilter categories={categories} selected={selected} onSelect={setSelected} />
-        <ItemGrid items={items} />
+        <ItemGrid items={items ?? []} loading={isLoading && !items} />
       </main>
     </>
   );
