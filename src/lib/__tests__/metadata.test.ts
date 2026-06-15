@@ -40,6 +40,19 @@ describe("fetchMetadata", () => {
     });
   });
 
+  it("decodes html entities in og:image urls and titles", async () => {
+    const html = `<html><head>
+      <meta property="og:title" content="A &quot;cool&quot; reel &#x1f600;" />
+      <meta property="og:image" content="https://cdn/img.jpg?a=1&amp;oh=xyz&amp;oe=ABC" />
+    </head></html>`;
+    vi.spyOn(global, "fetch").mockResolvedValue(
+      new Response(html, { status: 200, headers: { "content-type": "text/html" } })
+    );
+    const meta = await fetchMetadata("https://instagram.com/p/abc");
+    expect(meta.title).toBe('A "cool" reel 😀');
+    expect(meta.thumbnailUrl).toBe("https://cdn/img.jpg?a=1&oh=xyz&oe=ABC");
+  });
+
   it("falls back to url as title when fetch fails", async () => {
     vi.spyOn(global, "fetch").mockRejectedValue(new Error("network"));
     const meta = await fetchMetadata("https://example.com/broken");

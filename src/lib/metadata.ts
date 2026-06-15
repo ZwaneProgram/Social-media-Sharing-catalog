@@ -6,6 +6,30 @@ export interface LinkMetadata {
   platform: Platform;
 }
 
+// HTML attribute values are entity-encoded (e.g. & becomes &amp;). We must
+// decode them, otherwise Instagram/Facebook image URLs keep their &amp; and the
+// signed query string (oh/oe params) is mangled, so the CDN returns 403 and the
+// thumbnail appears broken. It also cleans up titles like &quot; and &#x201c;.
+export function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => codePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => codePoint(parseInt(dec, 10)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&"); // must run last so &amp;quot; isn't double-decoded
+}
+
+function codePoint(n: number): string {
+  try {
+    return String.fromCodePoint(n);
+  } catch {
+    return "";
+  }
+}
+
 function extractOgTag(html: string, property: string): string | null {
   // Match <meta property="og:xxx" content="..."> in either attribute order.
   const patterns = [
@@ -20,7 +44,7 @@ function extractOgTag(html: string, property: string): string | null {
   ];
   for (const re of patterns) {
     const m = html.match(re);
-    if (m) return m[1];
+    if (m) return decodeHtmlEntities(m[1]);
   }
   return null;
 }

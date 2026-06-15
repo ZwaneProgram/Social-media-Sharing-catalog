@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { fetchMetadata } from "@/lib/metadata";
+import { cacheThumbnail } from "@/lib/thumbnail";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -43,11 +44,13 @@ export async function POST(req: Request) {
   }
 
   const meta = await fetchMetadata(cleanUrl);
+  // Re-host expiring IG/FB thumbnails to a permanent copy (best-effort).
+  const thumbnailUrl = await cacheThumbnail(meta.thumbnailUrl, meta.platform);
   const item = await prisma.item.create({
     data: {
       url: cleanUrl,
       title: meta.title,
-      thumbnailUrl: meta.thumbnailUrl,
+      thumbnailUrl,
       platform: meta.platform,
       note: note ?? null,
       categoryId: categoryId ?? null,
