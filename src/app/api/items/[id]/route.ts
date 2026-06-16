@@ -20,10 +20,15 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const { note, categoryId } = await req.json();
-  const data: { note?: string | null; categoryId?: string | null } = {};
+  const { note, categoryId, showTitle } = await req.json();
+  const data: {
+    note?: string | null;
+    categoryId?: string | null;
+    showTitle?: boolean;
+  } = {};
   if (note !== undefined) data.note = note;
   if (categoryId !== undefined) data.categoryId = categoryId;
+  if (showTitle !== undefined) data.showTitle = Boolean(showTitle);
   const item = await prisma.item.update({ where: { id }, data });
   return NextResponse.json(item);
 }

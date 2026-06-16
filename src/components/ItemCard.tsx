@@ -7,6 +7,7 @@ export interface CatalogItem {
   thumbnailUrl: string | null;
   platform: string;
   note: string | null;
+  showTitle: boolean;
   categoryId: string | null;
   category: { id: string; name: string; color: string | null } | null;
   createdAt: string;
@@ -65,9 +66,11 @@ export function ItemCard({ item }: { item: CatalogItem }) {
             {item.category.name}
           </span>
         )}
-        <h3 className="line-clamp-2 text-sm font-medium leading-snug">{item.title}</h3>
-        {item.note && (
-          <p className="line-clamp-1 text-xs text-muted">{item.note}</p>
+        <h3 className="line-clamp-2 text-sm font-medium leading-snug">
+          {item.note?.trim() || item.title}
+        </h3>
+        {item.showTitle && item.note?.trim() && (
+          <p className="line-clamp-2 text-xs text-muted">{item.title}</p>
         )}
       </div>
     </Link>

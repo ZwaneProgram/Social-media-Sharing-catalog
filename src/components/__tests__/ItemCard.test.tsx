@@ -9,6 +9,7 @@ const item: CatalogItem = {
   thumbnailUrl: "https://img/yt.jpg",
   platform: "youtube",
   note: "for my next video",
+  showTitle: true,
   categoryId: "cat1",
   category: { id: "cat1", name: "Edits", color: "#ff0000" },
   createdAt: new Date().toISOString(),

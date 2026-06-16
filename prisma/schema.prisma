@@ -21,6 +21,7 @@ model Item {
   thumbnailUrl String?
   platform     String
   note         String?
+  showTitle    Boolean   @default(true)
   category     Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId   String?
   createdAt    DateTime  @default(now())
